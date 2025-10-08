@@ -31,19 +31,10 @@ jobs:
       - name: Generate changelog
         run: npx conventional-changelog -p angular -i CHANGELOG.md -s -r 0
 
-      - name: Commit changelog
-        run: |
-          # Configure git
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Check if CHANGELOG.md changed
-          if [[ `git status --porcelain CHANGELOG.md` ]]; then
-            git add CHANGELOG.md
-            git commit -m "chore: update changelog [skip ci]"
-            git push origin HEAD:${{ github.head_ref }}
-          else
-            echo "No changes in CHANGELOG.md"
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run the Action
+        uses: devops-infra/action-commit-push@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          add_timestamp: true
+          commit_prefix: "chore(docs)"
+          commit_message: "update changelog [skip ci]"
