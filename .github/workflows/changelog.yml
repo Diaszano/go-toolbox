@@ -38,3 +38,4 @@ jobs:
           add_timestamp: true
           commit_prefix: "chore(docs)"
           commit_message: "update changelog [skip ci]"
+          force_with_lease: true
