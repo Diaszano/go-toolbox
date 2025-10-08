@@ -1,0 +1,26 @@
+version: 2
+
+project_name: go-toolbox
+
+before:
+  hooks:
+    - go mod tidy
+
+builds: []
+
+archives: []
+
+changelog:
+  use: git
+  sort: desc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - "^ci:"
+
+release:
+  github:
+    owner: Diaszano
+    name: go-toolbox

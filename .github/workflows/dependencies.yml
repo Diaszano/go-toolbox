@@ -1,0 +1,62 @@
+name: Dependency Management
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'go.mod'
+      - 'go.sum'
+  schedule:
+    - cron: "0 3 * * 1"
+
+env:
+  GO_VERSION: 1.25
+
+jobs:
+  update-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Check for updates
+        id: check
+        run: |
+          go list -u -m all > updates.txt
+          if [ -s updates.txt ]; then
+            echo "has_updates=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.check.outputs.has_updates == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: update dependencies'
+          title: 'chore: update dependencies'
+          branch: 'deps/update'
+          base: 'main'
+          labels: 'dependencies.automated'
+
+  security:
+    runs-on: ubuntu-latest
+    needs: update-deps
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Run Gosec
+        uses: securego/gosec@master
+        with:
+          args: ./...
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/golang@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

@@ -1,0 +1,35 @@
+version: "2"
+
+run:
+  timeout: 1m
+
+
+formatters:
+  settings:
+    gofumpt:
+      module-path: github.com/Diaszano/go-toolbox
+      extra-rules: true
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/Diaszano/go-toolbox)
+    golines:
+      max-len: 120
+
+linters:
+  enable:
+    - errcheck
+    - gosec
+    - govet
+    - misspell
+    - prealloc
+    - nilerr
+    - nilnil
+    - noctx
+    - containedctx
+    - contextcheck
+    - fatcontext
+    - bodyclose
+    - gocyclo
+    - copyloopvar
