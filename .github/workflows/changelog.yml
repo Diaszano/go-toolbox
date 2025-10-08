@@ -1,0 +1,52 @@
+name: PR Changelog
+
+on:
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: 22
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install semantic-release
+        run: |
+          npm install -g \
+            semantic-release@24 \
+            @semantic-release/changelog \
+            @semantic-release/git
+
+      - name: Generate changelog
+        run: npx semantic-release --dry-run
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit changelog
+        run: |
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Check if CHANGELOG.md changed
+          if [[ `git status --porcelain CHANGELOG.md` ]]; then
+            git add CHANGELOG.md
+            git commit -m "chore: update changelog [skip ci]"
+            git push origin HEAD:${{ github.head_ref }}
+          else
+            echo "No changes in CHANGELOG.md"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
