@@ -25,14 +25,11 @@ jobs:
       - name: Install semantic-release
         run: |
           npm install -g \
-            semantic-release@24 \
-            @semantic-release/changelog \
-            @semantic-release/git
+          @semantic-release/release-notes-generator \
+          conventional-changelog-cli
 
       - name: Generate changelog
-        run: npx semantic-release --dry-run
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx conventional-changelog -p angular -i CHANGELOG.md -s -r 0
 
       - name: Commit changelog
         run: |
