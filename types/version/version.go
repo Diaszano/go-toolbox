@@ -152,39 +152,39 @@ func (v Version) Compare(other Version) int8 {
 // Possible errors:
 //   - ErrEmpty if the input string is empty
 //   - ErrInvalidFormat if the version does not conform to the SemVer specification
-func TryParse(input string) (*Version, error) {
+func TryParse(input string) (Version, error) {
 	if input == "" {
-		return nil, ErrEmpty
+		return Version{}, ErrEmpty
 	}
 
 	version := strings.TrimPrefix(input, "v")
 
 	if !re.MatchString(version) {
-		return nil, ErrInvalidFormat
+		return Version{}, ErrInvalidFormat
 	}
 
 	matches := re.FindStringSubmatch(version)
 
 	if len(matches) < 6 {
-		return nil, ErrInvalidFormat
+		return Version{}, ErrInvalidFormat
 	}
 
 	major, err := strconv.ParseUint(matches[1], 10, 64)
 	if err != nil {
-		return nil, errors.Join(ErrBase, err)
+		return Version{}, errors.Join(ErrBase, err)
 	}
 
 	minor, err := strconv.ParseUint(matches[2], 10, 64)
 	if err != nil {
-		return nil, errors.Join(ErrBase, err)
+		return Version{}, errors.Join(ErrBase, err)
 	}
 
 	patch, err := strconv.ParseUint(matches[3], 10, 64)
 	if err != nil {
-		return nil, errors.Join(ErrBase, err)
+		return Version{}, errors.Join(ErrBase, err)
 	}
 
-	return &Version{
+	return Version{
 		Major:      major,
 		Minor:      minor,
 		Patch:      patch,
@@ -205,7 +205,7 @@ func TryParse(input string) (*Version, error) {
 // Panics with:
 //   - ErrEmpty if the version string is empty.
 //   - ErrInvalidFormat if the version string has an invalid format.
-func Parse(input string) *Version {
+func Parse(input string) Version {
 	version, err := TryParse(input)
 	if err != nil {
 		panic(err)

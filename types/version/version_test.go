@@ -11,13 +11,13 @@ func TestTryParse(t *testing.T) {
 	tests := []struct {
 		name    string
 		input   string
-		want    *version.Version
+		want    version.Version
 		wantErr error
 	}{
 		{
 			name:  "valid semantic version",
 			input: "1.0.0",
-			want: &version.Version{
+			want: version.Version{
 				Major: 1,
 				Minor: 0,
 				Patch: 0,
@@ -27,7 +27,7 @@ func TestTryParse(t *testing.T) {
 		{
 			name:  "version with v prefix",
 			input: "v2.1.3",
-			want: &version.Version{
+			want: version.Version{
 				Major: 2,
 				Minor: 1,
 				Patch: 3,
@@ -37,7 +37,7 @@ func TestTryParse(t *testing.T) {
 		{
 			name:  "version with prerelease",
 			input: "1.2.3-alpha",
-			want: &version.Version{
+			want: version.Version{
 				Major:      1,
 				Minor:      2,
 				Patch:      3,
@@ -48,7 +48,7 @@ func TestTryParse(t *testing.T) {
 		{
 			name:  "version with build metadata",
 			input: "1.2.3+build.123",
-			want: &version.Version{
+			want: version.Version{
 				Major: 1,
 				Minor: 2,
 				Patch: 3,
@@ -59,7 +59,7 @@ func TestTryParse(t *testing.T) {
 		{
 			name:  "version with prerelease and build metadata",
 			input: "1.2.3-beta+exp.sha.5114f85",
-			want: &version.Version{
+			want: version.Version{
 				Major:      1,
 				Minor:      2,
 				Patch:      3,
@@ -71,19 +71,16 @@ func TestTryParse(t *testing.T) {
 		{
 			name:    "empty input returns ErrEmpty",
 			input:   "",
-			want:    nil,
 			wantErr: version.ErrEmpty,
 		},
 		{
 			name:    "invalid format returns ErrInvalidFormat",
 			input:   "invalid-version",
-			want:    nil,
 			wantErr: version.ErrInvalidFormat,
 		},
 		{
 			name:    "missing patch number returns ErrInvalidFormat",
 			input:   "1.2",
-			want:    nil,
 			wantErr: version.ErrInvalidFormat,
 		},
 	}
@@ -95,7 +92,7 @@ func TestTryParse(t *testing.T) {
 			if tt.wantErr != nil {
 				require.Error(t, err, "expected error for input %q", tt.input)
 				require.ErrorIs(t, err, tt.wantErr)
-				require.Nil(t, got, "expected nil version for invalid input")
+				require.Empty(t, got, "expected nil version for invalid input")
 				return
 			}
 
@@ -109,14 +106,14 @@ func TestParse(t *testing.T) {
 	tests := []struct {
 		name        string
 		input       string
-		want        *version.Version
+		want        version.Version
 		expectPanic bool
 		err         error
 	}{
 		{
 			name:  "valid semantic version",
 			input: "1.2.3",
-			want: &version.Version{
+			want: version.Version{
 				Major: 1,
 				Minor: 2,
 				Patch: 3,
@@ -125,7 +122,7 @@ func TestParse(t *testing.T) {
 		{
 			name:  "version with prefix v",
 			input: "v1.0.0",
-			want: &version.Version{
+			want: version.Version{
 				Major: 1,
 				Minor: 0,
 				Patch: 0,
@@ -134,7 +131,7 @@ func TestParse(t *testing.T) {
 		{
 			name:  "version with prerelease",
 			input: "1.2.3-alpha",
-			want: &version.Version{
+			want: version.Version{
 				Major:      1,
 				Minor:      2,
 				Patch:      3,
@@ -144,7 +141,7 @@ func TestParse(t *testing.T) {
 		{
 			name:  "version with build metadata",
 			input: "1.2.3+build.123",
-			want: &version.Version{
+			want: version.Version{
 				Major: 1,
 				Minor: 2,
 				Patch: 3,
@@ -154,7 +151,7 @@ func TestParse(t *testing.T) {
 		{
 			name:  "version with prerelease and build metadata",
 			input: "1.2.3-beta+exp.sha.5114f85",
-			want: &version.Version{
+			want: version.Version{
 				Major:      1,
 				Minor:      2,
 				Patch:      3,
