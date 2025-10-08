@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  GO_VERSION: 1.25
 
 jobs:
   test:
