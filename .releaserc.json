@@ -15,7 +15,6 @@
       {
         "assets": ["CHANGELOG.md"],
         "message": "chore(release): update changelog [skip ci]",
-        "push": false
       }
     ],
     "@semantic-release/github"
