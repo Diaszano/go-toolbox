@@ -88,3 +88,15 @@ func TryMapWithIndex[Slice ~[]T, T Value, R Value](slice Slice, transformer func
 	}
 	return result, nil
 }
+
+// Filter returns a new slice containing only the elements
+// that satisfy the provided predicate function.
+func Filter[Slice ~[]T, T Value](slice Slice, predicate func(T) bool) Slice {
+	result := make(Slice, 0, len(slice))
+	for _, element := range slice {
+		if predicate(element) {
+			result = append(result, element)
+		}
+	}
+	return result
+}

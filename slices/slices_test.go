@@ -88,3 +88,33 @@ func TestTryMapWithIndex(t *testing.T) {
 	require.Equal(t, "fail at index 2", err.Error())
 	require.Nil(t, output)
 }
+
+func TestFilter(t *testing.T) {
+	// Test with integers
+	numbers := []int{1, 2, 3, 4, 5}
+	evens := slices.Filter(numbers, func(v int) bool {
+		return v%2 == 0
+	})
+	require.Equal(t, []int{2, 4}, evens)
+
+	// Test with strings
+	words := []string{"apple", "banana", "cherry", "date"}
+	longWords := slices.Filter(words, func(v string) bool {
+		return len(v) > 5
+	})
+	require.Equal(t, []string{"banana", "cherry"}, longWords)
+
+	// Test with no elements matching
+	smallNumbers := []int{1, 3, 5}
+	result := slices.Filter(smallNumbers, func(v int) bool {
+		return v%2 == 0
+	})
+	require.Empty(t, result)
+
+	// Test with all elements matching
+	allNumbers := []int{2, 4, 6}
+	allEven := slices.Filter(allNumbers, func(v int) bool {
+		return v%2 == 0
+	})
+	require.Equal(t, allNumbers, allEven)
+}
